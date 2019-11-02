@@ -1,0 +1,34 @@
+{
+  "1986": {
+    "free_days": 10,
+    "a": {
+      "start": "2019-10-01",
+      "end": "2019-10-10",
+      "discount": null,
+      "override_price": null
+    },
+    "b": {
+      "start": "2019-10-05",
+      "end": "2019-10-10",
+      "discount": null,
+      "override_price": null
+    },
+    "c": null
+  },
+  "1988": {
+    "free_days": 20,
+    "a": null,
+    "b": {
+      "start": "2019-10-05",
+      "end": "2019-10-10",
+      "discount": null,
+      "override_price": null
+    },
+    "c": {
+      "start": "2019-10-01",
+      "end": "2019-10-10",
+      "discount": null,
+      "override_price": null
+    }
+  }
+}
