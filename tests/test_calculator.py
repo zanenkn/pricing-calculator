@@ -179,22 +179,24 @@ def getStart():
 def getStart():
     assert getStart(datetime.date(2019, 9, 9), datetime.date(2019, 8, 29)) == datetime.date(2019, 9, 9)
  
-    
-# function that determines the end date of full price service      
-def getChargeFullPriceEndDate(paramEnd, serviceEnd):
-    if serviceEnd == None:
-      serviceEnd = date.today()
-    if paramEnd > serviceEnd:
-      chargeFullPriceEndDate = serviceEnd
+   
+# function that determines the end date of full price service (param, service end date) / end date of discounted service (discountEnd, full price end date)     
+def getEnd(end1, end2):
+    if end2 == None:
+      end2 = date.today()
+    if end1 > end2:
+      end = end2
     else:
-      chargeFullPriceEndDate = paramEnd
-    return chargeFullPriceEndDate
+      end = end1
+    return end
   
-def test_1getChargeFullPriceEndDate():
-    assert getChargeFullPriceEndDate(datetime.date(2019, 9, 9), datetime.date(2019, 10, 1)) == datetime.date(2019, 9, 9)
+def test_1getEnd():
+    assert getEnd(datetime.date(2019, 9, 9), datetime.date(2019, 10, 1)) == datetime.date(2019, 9, 9)
     
-def test_2getChargeFullPriceEndDate():
-    assert getChargeFullPriceEndDate(datetime.date(2019, 10, 10), datetime.date(2019, 9, 18)) == datetime.date(2019, 9, 18)
+def test_2getEnd():
+    assert getEnd(datetime.date(2019, 10, 10), datetime.date(2019, 9, 18)) == datetime.date(2019, 9, 18)
     
-def test_3getChargeFullPriceEndDate():
-    assert getChargeFullPriceEndDate(datetime.date(2019, 10, 10), None) == datetime.date(2019, 10, 10)
+def test_3getEnd():
+    assert getEnd(datetime.date(2019, 10, 10), None) == datetime.date(2019, 10, 10)
+    
+
