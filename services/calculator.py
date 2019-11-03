@@ -41,7 +41,7 @@ def getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer,
     b = getDates(startB, endB)
     bDates = dropWeekends(b)
     cDates = getDates(startC, endC)
-    currentDay = startCustomer
+    currentDay = date.fromisoformat(startCustomer)
     freeDays = free
     today = date.today()
     lastFreeDayA = None
@@ -101,13 +101,39 @@ def calculate(id):
   start = request.args.get('start')
   end = request.args.get('end')
   
-  startB = customers[id]['b']['start']
+  customer = customers[id]
+  free = customers[id]['free_days']
+  startCustomer = customers[id]['since']
+  
+  if customers[id]['a'] == None:
+    startA = None
+    endA = None
+  else:
+    startA = customers[id]['a']['start']
+    endA = customers[id]['a']['end']
+  
+  if customers[id]['b'] == None:
+    startB = None
+    endB = None
+  else:
+    startB = customers[id]['b']['start']
+    endB = customers[id]['b']['end']
+    
+  if customers[id]['c'] == None:
+    startC = None
+    endC = None
+  else:
+    startC = customers[id]['c']['start']
+    endC = customers[id]['c']['end']
+    
+  resp = getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer, free)
+  
   
   if id not in customers:
       raise Exception
       
   return json_response({
-      "startB": f"{startB}"
+      "customer": f"{resp}"
   })
 
 if __name__ == '__main__':
