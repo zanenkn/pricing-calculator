@@ -65,8 +65,16 @@ def test_dropWeekends():
     assert dropWeekends(rng) == expected
 
 
-# function to determine when the free service ends for services A, B and C considering the free days        
-def getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free):
+# function to get a first paid day out of the last free day
+def getFirstPaidDay(lastFreeDay):
+    if lastFreeDay == None:
+      firstPaidDay = None
+    else:
+      firstPaidDay = lastFreeDay + timedelta(days=1)
+    return firstPaidDay
+
+# function to determine on what date to start charging for services A, B and C considering the free days        
+def getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer, free):
     a = getDates(startA, endA)
     aDates = dropWeekends(a)
     b = getDates(startB, endB)
@@ -95,14 +103,15 @@ def getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, f
         lastFreeDayC = currentDay
         if freeDays == 0:
           break
-      currentDay += + timedelta(days=1)
+      currentDay += timedelta(days=1)
+    
     return [
-      {'last_a': lastFreeDayA},
-      {'last_b': lastFreeDayB},
-      {'last_c': lastFreeDayC}
+      {'firstPaidDayA': getFirstPaidDay(lastFreeDayA)},
+      {'firstPaidDayB': getFirstPaidDay(lastFreeDayB)},
+      {'firstPaidDayC': getFirstPaidDay(lastFreeDayC)}
     ]
 
-def test_1getFreeServiceEnd():
+def test_1getPaidServiceStart():
     startA = '2019-10-01'
     endA =  '2019-10-10'
     startB = '2019-10-05'
@@ -113,13 +122,13 @@ def test_1getFreeServiceEnd():
     free = 8
     
     expected = [
-      {'last_a': datetime.date(2019, 10, 8)}, 
-      {'last_b': datetime.date(2019, 10, 8)}, 
-      {'last_c': None}]
+      {'firstPaidDayA': datetime.date(2019, 10, 9)}, 
+      {'firstPaidDayB': datetime.date(2019, 10, 9)}, 
+      {'firstPaidDayC': None}]
     
-    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
+    assert getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
 
-def test_2getFreeServiceEnd():
+def test_2getPaidServiceStart():
     startA = '2019-10-01'
     endA =  '2019-10-10'
     startB = '2019-10-05'
@@ -130,14 +139,14 @@ def test_2getFreeServiceEnd():
     free = 8
     
     expected = [
-      {'last_a': datetime.date(2019, 10, 8)}, 
-      {'last_b': datetime.date(2019, 10, 8)}, 
-      {'last_c': None}
+      {'firstPaidDayA': datetime.date(2019, 10, 9)}, 
+      {'firstPaidDayB': datetime.date(2019, 10, 9)}, 
+      {'firstPaidDayC': None}
     ]
     
-    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
+    assert getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
     
-def test_3getFreeServiceEnd():
+def test_3getPaidServiceStart():
     startA = '2019-10-01'
     endA =  '2019-10-10'
     startB = '2019-10-05'
@@ -148,12 +157,12 @@ def test_3getFreeServiceEnd():
     free = 8
     
     expected = [
-      {'last_a': datetime.date(2019, 10, 8)}, 
-      {'last_b': datetime.date(2019, 10, 8)}, 
-      {'last_c': None}
+      {'firstPaidDayA': datetime.date(2019, 10, 9)}, 
+      {'firstPaidDayB': datetime.date(2019, 10, 9)}, 
+      {'firstPaidDayC': None}
     ]
     
-    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
+    assert getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
 
 
 # function that determines the start date of full price service    
