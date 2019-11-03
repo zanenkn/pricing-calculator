@@ -73,7 +73,9 @@ def getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer,
     ]
 
 def getStart(start1, start2):
-    if start1 > start2:
+    if start1 == None or start2 == None:
+      start = None
+    elif start1 > start2:
       start = start1
     else:
       start = start2
@@ -82,7 +84,10 @@ def getStart(start1, start2):
 def getEnd(end1, end2):
     if end2 == None:
       end2 = date.today()
-    if end1 > end2:
+      
+    if end1 == None:
+      end = None
+    elif end1 > end2:
       end = end2
     else:
       end = end1
@@ -98,8 +103,8 @@ def hello():
     
 @app.route("/calculate/<id>")
 def calculate(id):
-  start = request.args.get('start')
-  end = request.args.get('end')
+  start = date.fromisoformat(request.args.get('start'))
+  end = date.fromisoformat(request.args.get('end'))
   
   customer = customers[id]
   free = customers[id]['free_days']
@@ -108,32 +113,50 @@ def calculate(id):
   if customers[id]['a'] == None:
     startA = None
     endA = None
+    chargeFullPriceEndA = None
   else:
     startA = customers[id]['a']['start']
     endA = customers[id]['a']['end']
+    chargeFullPriceEndA = getEnd(end, date.fromisoformat(endA))
   
   if customers[id]['b'] == None:
     startB = None
     endB = None
+    chargeFullPriceEndB = None
   else:
     startB = customers[id]['b']['start']
     endB = customers[id]['b']['end']
+    chargeFullPriceEndB = getEnd(end, date.fromisoformat(endB))
     
   if customers[id]['c'] == None:
     startC = None
     endC = None
+    chargeFullPriceEndC = None
   else:
     startC = customers[id]['c']['start']
     endC = customers[id]['c']['end']
+    chargeFullPriceEndC = getEnd(end, date.fromisoformat(endC))
     
-  resp = getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer, free)
+  paidServiceStart = getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer, free)
+  paidServiceStartA = (paidServiceStart[0]['firstPaidDayA'])
+  paidServiceStartB = (paidServiceStart[1]['firstPaidDayB'])
+  paidServiceStartC = (paidServiceStart[2]['firstPaidDayC'])
+  
+  chargeFullPriceStartA = getStart(start, paidServiceStartA)
+  chargeFullPriceStartB = getStart(start, paidServiceStartB)
+  chargeFullPriceStartC = getStart(start, paidServiceStartC)
   
   
   if id not in customers:
       raise Exception
       
   return json_response({
-      "customer": f"{resp}"
+      "aStart": f"{chargeFullPriceStartA}",
+      "bStart": f"{chargeFullPriceStartB}",
+      "cStart": f"{chargeFullPriceStartC}",
+      "aEnd": f"{chargeFullPriceEndA}",
+      "bEnd": f"{chargeFullPriceEndB}",
+      "cEnd": f"{chargeFullPriceEndC}"
   })
 
 if __name__ == '__main__':
