@@ -165,19 +165,19 @@ def test_3getPaidServiceStart():
     assert getPaidServiceStart(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
 
 
-# function that determines the start date of full price service    
-def getChargeFullPriceStartDate(paramStart, serviceLastFreeDay):
-    if paramStart > serviceLastFreeDay:
-      chargeFullPriceStartDate = paramStart
+# function that determines the start date of full price service (param, firstPaidDay) / start date of discounted service (discountStart, firstPaidDay)   
+def getStart(start1, start2):
+    if start1 > start2:
+      start = start1
     else:
-      chargeFullPriceStartDate = serviceLastFreeDay + timedelta(days=1)
-    return chargeFullPriceStartDate
+      start = start2
+    return start
 
-def test_1getChargeFullPriceStartDate():
-    assert getChargeFullPriceStartDate(datetime.date(2019, 9, 9), datetime.date(2019, 10, 1)) == datetime.date(2019, 10, 2)
+def getStart():
+    assert getStart(datetime.date(2019, 9, 9), datetime.date(2019, 10, 1)) == datetime.date(2019, 10, 2)
     
-def test_2getChargeFullPriceStartDate():
-    assert getChargeFullPriceStartDate(datetime.date(2019, 9, 9), datetime.date(2019, 8, 29)) == datetime.date(2019, 9, 9)
+def getStart():
+    assert getStart(datetime.date(2019, 9, 9), datetime.date(2019, 8, 29)) == datetime.date(2019, 9, 9)
  
     
 # function that determines the end date of full price service      
