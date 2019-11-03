@@ -2,7 +2,7 @@ import pytest
 import datetime
 from datetime import date, timedelta
 
-
+# function to get an array of dates between 2
 def getDates(startDate, endDate):
     dateArray = []
     if endDate == None:
@@ -17,15 +17,55 @@ def getDates(startDate, endDate):
       return dateArray
   
 def test_getDates():
-    assert getDates('2019-10-01', '2019-10-10') == [datetime.date(2019, 10, 1), datetime.date(2019, 10, 2), datetime.date(2019, 10, 3), datetime.date(2019, 10, 4), datetime.date(2019, 10, 5), datetime.date(2019, 10, 6), datetime.date(2019, 10, 7), datetime.date(2019, 10, 8), datetime.date(2019, 10, 9), datetime.date(2019, 10, 10)]
+    expected = [
+      datetime.date(2019, 10, 1), 
+      datetime.date(2019, 10, 2), 
+      datetime.date(2019, 10, 3), 
+      datetime.date(2019, 10, 4), 
+      datetime.date(2019, 10, 5), 
+      datetime.date(2019, 10, 6), 
+      datetime.date(2019, 10, 7), 
+      datetime.date(2019, 10, 8), 
+      datetime.date(2019, 10, 9), 
+      datetime.date(2019, 10, 10)
+    ]
     
+    assert getDates('2019-10-01', '2019-10-10') == expected
+
+
+# function to remove saturdays and sundays from an array of dates    
 def dropWeekends(rng):
     return [d for d in rng if not d.isoweekday() in [6,7]]
 
 def test_dropWeekends():
-    rng = [datetime.date(2019, 10, 1), datetime.date(2019, 10, 2), datetime.date(2019, 10, 3), datetime.date(2019, 10, 4), datetime.date(2019, 10, 5), datetime.date(2019, 10, 6), datetime.date(2019, 10, 7), datetime.date(2019, 10, 8), datetime.date(2019, 10, 9), datetime.date(2019, 10, 10)]
-    assert dropWeekends(rng) == [datetime.date(2019, 10, 1), datetime.date(2019, 10, 2), datetime.date(2019, 10, 3), datetime.date(2019, 10, 4), datetime.date(2019, 10, 7), datetime.date(2019, 10, 8), datetime.date(2019, 10, 9), datetime.date(2019, 10, 10)]
+    rng = [
+      datetime.date(2019, 10, 1), 
+      datetime.date(2019, 10, 2), 
+      datetime.date(2019, 10, 3), 
+      datetime.date(2019, 10, 4), 
+      datetime.date(2019, 10, 5), 
+      datetime.date(2019, 10, 6), 
+      datetime.date(2019, 10, 7), 
+      datetime.date(2019, 10, 8), 
+      datetime.date(2019, 10, 9), 
+      datetime.date(2019, 10, 10)
+    ]
     
+    expected = [
+      datetime.date(2019, 10, 1), 
+      datetime.date(2019, 10, 2), 
+      datetime.date(2019, 10, 3), 
+      datetime.date(2019, 10, 4), 
+      datetime.date(2019, 10, 7), 
+      datetime.date(2019, 10, 8), 
+      datetime.date(2019, 10, 9), 
+      datetime.date(2019, 10, 10)
+    ]
+    
+    assert dropWeekends(rng) == expected
+
+
+# function to determine when the free service ends for services A, B and C considering the free days        
 def getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free):
     a = getDates(startA, endA)
     aDates = dropWeekends(a)
@@ -71,7 +111,13 @@ def test_1getFreeServiceEnd():
     endC = '2019-10-10'
     startCustomer = datetime.date(2019, 9, 9)
     free = 8
-    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == [{'last_a': datetime.date(2019, 10, 8)}, {'last_b': datetime.date(2019, 10, 8)}, {'last_c': None}]
+    
+    expected = [
+      {'last_a': datetime.date(2019, 10, 8)}, 
+      {'last_b': datetime.date(2019, 10, 8)}, 
+      {'last_c': None}]
+    
+    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
 
 def test_2getFreeServiceEnd():
     startA = '2019-10-01'
@@ -82,7 +128,14 @@ def test_2getFreeServiceEnd():
     endC = None
     startCustomer = datetime.date(2019, 9, 9)
     free = 8
-    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == [{'last_a': datetime.date(2019, 10, 8)}, {'last_b': datetime.date(2019, 10, 8)}, {'last_c': None}]
+    
+    expected = [
+      {'last_a': datetime.date(2019, 10, 8)}, 
+      {'last_b': datetime.date(2019, 10, 8)}, 
+      {'last_c': None}
+    ]
+    
+    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
     
 def test_3getFreeServiceEnd():
     startA = '2019-10-01'
@@ -93,8 +146,17 @@ def test_3getFreeServiceEnd():
     endC = None
     startCustomer = datetime.date(2019, 9, 9)
     free = 8
-    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == [{'last_a': datetime.date(2019, 10, 8)}, {'last_b': datetime.date(2019, 10, 8)}, {'last_c': None}]
     
+    expected = [
+      {'last_a': datetime.date(2019, 10, 8)}, 
+      {'last_b': datetime.date(2019, 10, 8)}, 
+      {'last_c': None}
+    ]
+    
+    assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == expected
+
+
+# function that determines the start date of full price service    
 def getChargeFullPriceStartDate(paramStart, serviceLastFreeDay):
     if paramStart > serviceLastFreeDay:
       chargeFullPriceStartDate = paramStart
@@ -107,8 +169,9 @@ def test_1getChargeFullPriceStartDate():
     
 def test_2getChargeFullPriceStartDate():
     assert getChargeFullPriceStartDate(datetime.date(2019, 9, 9), datetime.date(2019, 8, 29)) == datetime.date(2019, 9, 9)
+ 
     
-    
+# function that determines the end date of full price service      
 def getChargeFullPriceEndDate(paramEnd, serviceEnd):
     if serviceEnd == None:
       serviceEnd = date.today()
