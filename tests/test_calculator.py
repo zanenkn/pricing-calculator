@@ -95,3 +95,15 @@ def test_3getFreeServiceEnd():
     free = 8
     assert getFreeServiceEnd(startA, endA, startB, endB, startC, endC, startCustomer, free) == [{'last_a': datetime.date(2019, 10, 8)}, {'last_b': datetime.date(2019, 10, 8)}, {'last_c': None}]
     
+def getChargeFullPriceStartDate(paramStart, serviceLastFreeDay):
+    if paramStart > serviceLastFreeDay:
+      chargeFullPriceStartDate = paramStart
+    else:
+      chargeFullPriceStartDate = serviceLastFreeDay + timedelta(days=1)
+    return chargeFullPriceStartDate
+
+def test_1getChargeFullPriceStartDate():
+    assert getChargeFullPriceStartDate(datetime.date(2019, 9, 9), datetime.date(2019, 10, 1)) == datetime.date(2019, 10, 2)
+    
+def test_2getChargeFullPriceStartDate():
+    assert getChargeFullPriceStartDate(datetime.date(2019, 9, 9), datetime.date(2019, 8, 29)) == datetime.date(2019, 9, 9)
