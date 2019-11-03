@@ -199,4 +199,10 @@ def test_2getEnd():
 def test_3getEnd():
     assert getEnd(datetime.date(2019, 10, 10), None) == datetime.date(2019, 10, 10)
     
+    
+def howManyDays(start, end):
+    return (date.fromisoformat(end) - date.fromisoformat(start)).days + 1
+  
+def test_howManyDays():
+    assert howManyDays('2019-01-01', '2019-01-05') == 5
 
